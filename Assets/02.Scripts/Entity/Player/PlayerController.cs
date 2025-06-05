@@ -63,16 +63,25 @@ public class PlayerController : MonoBehaviour
 
     public bool IsEnemyInRange()
     {
-        return targetEnemy
-               && Vector3.Distance(transform.position, targetEnemy.position) <= detectRange;
+        if (targetEnemy == null) return false;
+
+        Enemy enemy = targetEnemy.GetComponent<Enemy>();
+        if (enemy && enemy.IsDead) return false;
+
+        return Vector3.Distance(transform.position, targetEnemy.position) <= detectRange;
     }
 
     public void DetectEnemy()
     {
         Collider[] enemies = Physics.OverlapSphere(transform.position, detectRange, LayerMask.GetMask("Enemy"));
 
-        targetEnemy = enemies.Length > 0 
-            ? enemies[0].transform 
-            : null;
+        foreach (var col in enemies)
+        {
+            Enemy enemy = col.GetComponent<Enemy>();
+            if (!enemy || enemy.IsDead) continue;
+            
+            targetEnemy = enemy.transform;
+            return;
+        }
     }
 }

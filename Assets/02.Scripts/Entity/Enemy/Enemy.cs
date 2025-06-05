@@ -2,10 +2,13 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamagable
 {
+    [Header("Stat")]
     [SerializeField] private EnemyData data;
     private int currentHp;
     private bool isDead;
+    public bool IsDead => isDead;
     
+    [Header("Animation")]
     [SerializeField] private AnimatorOverrideController overrideController;
     [SerializeField] private EnemyAnimationHandler animHandler;
     private Animator animator;

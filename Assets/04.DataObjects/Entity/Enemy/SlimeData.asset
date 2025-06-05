@@ -21,3 +21,4 @@ MonoBehaviour:
   enemyName: Slinme
   enemyPrefab: {fileID: 5439626921401804965, guid: 637cf9167c02ee64586b8df513f5fca4,
     type: 3}
+  overrideController: {fileID: 22100000, guid: aa780bda73d7f544f96f8a9adf9c112f, type: 2}
