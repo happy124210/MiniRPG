@@ -44,13 +44,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<MonoBehaviour> screenUIList;
     private Dictionary<ScreenType, IGUI> screenUIs = new();
     
-    [Header("Popup UIs")]
-    [SerializeField] private List<MonoBehaviour> popupUIList;
-    private Dictionary<PopupType, IGUI> popupUIs = new();
-    
-    [Header("Modal UIs")]
-    [SerializeField] private List<MonoBehaviour> modalUIList;
-    private Dictionary<ModalType, IGUI> modalUIs = new();
+    // Popup과 Modal은 UICanvasMain에서 관리하므로 제거
     
     // 현재 상태
     private ScreenType currentScreen = ScreenType.Main;
@@ -67,47 +61,59 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        
+        // 여기서는 초기화하지 않음 - GameManager에서 호출할 때까지 대기
     }
-
+    
+    /// <summary>
+    /// GameManager에서 호출하는 초기화 메서드
+    /// </summary>
     public void Initialize()
     {
         InitializeUIs();
+        Debug.Log("UIManager 초기화 완료");
     }
     
     private void InitializeUIs()
     {
-        // Screen UIs 초기화
-        foreach (var uiMono in screenUIList)
+        // Screen UIs만 초기화 (팝업들은 각 Screen에서 관리)
+        if (screenUIList != null && screenUIList.Count > 0)
         {
-            if (uiMono is IGUI gui)
+            foreach (var uiMono in screenUIList)
             {
-                ScreenType screenType = GetScreenTypeFromName(uiMono.name);
-                screenUIs[screenType] = gui;
-                gui.Initialization();
+                if (uiMono == null) 
+                {
+                    Debug.LogWarning("Screen UI List에 null 항목이 있습니다!");
+                    continue;
+                }
+                
+                if (uiMono is IGUI gui)
+                {
+                    ScreenType screenType = GetScreenTypeFromName(uiMono.name);
+                    screenUIs[screenType] = gui;
+                    
+                    try
+                    {
+                        gui.Initialization();
+                        Debug.Log($"Screen UI 초기화 완료: {uiMono.name}");
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogError($"Screen UI 초기화 실패: {uiMono.name}, Error: {e.Message}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"{uiMono.name}이 IGUI를 구현하지 않습니다!");
+                }
             }
+        }
+        else
+        {
+            Debug.Log("Screen UI List가 비어있습니다.");
         }
         
-        // Popup UIs 초기화  
-        foreach (var uiMono in popupUIList)
-        {
-            if (uiMono is IGUI gui)
-            {
-                PopupType popupType = GetPopupTypeFromName(uiMono.name);
-                popupUIs[popupType] = gui;
-                gui.Initialization();
-            }
-        }
-        
-        // Modal UIs 초기화
-        foreach (var uiMono in modalUIList)
-        {
-            if (uiMono is IGUI gui)
-            {
-                ModalType modalType = GetModalTypeFromName(uiMono.name);
-                modalUIs[modalType] = gui;
-                gui.Initialization();
-            }
-        }
+        Debug.Log($"UIManager 초기화 완료 - Screen: {screenUIs.Count}");
     }
     
     #region Screen Management
@@ -147,19 +153,38 @@ public class UIManager : MonoBehaviour
     #region Popup Management
     
     /// <summary>
-    /// 팝업 열기 (기존 화면 위에 올리기)
+    /// 팝업 열기 (Main 화면에서만 가능)
     /// </summary>
     public void ShowPopup(PopupType popupType)
     {
-        if (popupUIs.ContainsKey(popupType))
+        // Main 화면이 아니면 팝업 불가
+        if (currentScreen != ScreenType.Main)
         {
-            popupUIs[popupType].Open();
-            activePopups.Push(popupType);
-            Debug.Log($"팝업 열기: {popupType}");
+            Debug.LogWarning($"팝업은 Main 화면에서만 열 수 있습니다. 현재: {currentScreen}");
+            return;
+        }
+        
+        // Main UI에 팝업 관리 위임
+        if (screenUIs.ContainsKey(ScreenType.Main) && screenUIs[ScreenType.Main] is UICanvasMain mainUI)
+        {
+            switch (popupType)
+            {
+                case PopupType.Inventory:
+                    mainUI.ShowInventory();
+                    activePopups.Push(popupType);
+                    break;
+                case PopupType.Shop:
+                    mainUI.ShowShop();
+                    activePopups.Push(popupType);
+                    break;
+                default:
+                    Debug.LogWarning($"지원하지 않는 팝업 타입: {popupType}");
+                    break;
+            }
         }
         else
         {
-            Debug.LogError($"Popup UI not found: {popupType}");
+            Debug.LogError("Main UI를 찾을 수 없습니다!");
         }
     }
     
@@ -168,26 +193,59 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void ClosePopup(PopupType popupType)
     {
-        if (popupUIs.ContainsKey(popupType))
+        if (screenUIs.ContainsKey(ScreenType.Main) && screenUIs[ScreenType.Main] is UICanvasMain mainUI)
         {
-            popupUIs[popupType].Close();
+            switch (popupType)
+            {
+                case PopupType.Inventory:
+                    mainUI.CloseInventory();
+                    break;
+                case PopupType.Shop:
+                    mainUI.CloseShop();
+                    break;
+            }
             
             // 스택에서 제거
-            Stack<PopupType> tempStack = new();
-            while (activePopups.Count > 0)
+            RemoveFromPopupStack(popupType);
+        }
+    }
+    
+    /// <summary>
+    /// 모달 열기
+    /// </summary>
+    public void ShowModal(ModalType modalType)
+    {
+        if (screenUIs.ContainsKey(ScreenType.Main) && screenUIs[ScreenType.Main] is UICanvasMain mainUI)
+        {
+            switch (modalType)
             {
-                PopupType popup = activePopups.Pop();
-                if (popup != popupType)
-                {
-                    tempStack.Push(popup);
-                }
+                case ModalType.Confirm:
+                    mainUI.ShowConfirm();
+                    activeModals.Push(modalType);
+                    break;
+                default:
+                    Debug.LogWarning($"지원하지 않는 모달 타입: {modalType}");
+                    break;
             }
-            while (tempStack.Count > 0)
+        }
+    }
+    
+    /// <summary>
+    /// 모달 닫기
+    /// </summary>
+    public void CloseModal(ModalType modalType)
+    {
+        if (screenUIs.ContainsKey(ScreenType.Main) && screenUIs[ScreenType.Main] is UICanvasMain mainUI)
+        {
+            switch (modalType)
             {
-                activePopups.Push(tempStack.Pop());
+                case ModalType.Confirm:
+                    mainUI.CloseConfirm();
+                    break;
             }
             
-            Debug.Log($"팝업 닫기: {popupType}");
+            // 스택에서 제거
+            RemoveFromModalStack(modalType);
         }
     }
     
@@ -199,7 +257,7 @@ public class UIManager : MonoBehaviour
         if (activePopups.Count > 0)
         {
             PopupType topPopup = activePopups.Pop();
-            popupUIs[topPopup].Close();
+            ClosePopup(topPopup);
             Debug.Log($"최상위 팝업 닫기: {topPopup}");
         }
     }
@@ -209,37 +267,11 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void CloseAllPopups()
     {
-        while (activePopups.Count > 0)
+        if (screenUIs.ContainsKey(ScreenType.Main) && screenUIs[ScreenType.Main] is UICanvasMain mainUI)
         {
-            PopupType popup = activePopups.Pop();
-            popupUIs[popup].Close();
-        }
-        Debug.Log("모든 팝업 닫기");
-    }
-    
-    public bool IsPopupOpen(PopupType popupType)
-    {
-        return activePopups.Contains(popupType);
-    }
-    
-    #endregion
-    
-    #region Modal Management
-    
-    /// <summary>
-    /// 모달 열기 (최상위)
-    /// </summary>
-    public void ShowModal(ModalType modalType)
-    {
-        if (modalUIs.ContainsKey(modalType))
-        {
-            modalUIs[modalType].Open();
-            activeModals.Push(modalType);
-            Debug.Log($"모달 열기: {modalType}");
-        }
-        else
-        {
-            Debug.LogError($"Modal UI not found: {modalType}");
+            mainUI.CloseAllPopups();
+            activePopups.Clear();
+            Debug.Log("모든 팝업 닫기");
         }
     }
     
@@ -251,7 +283,7 @@ public class UIManager : MonoBehaviour
         if (activeModals.Count > 0)
         {
             ModalType topModal = activeModals.Pop();
-            modalUIs[topModal].Close();
+            CloseModal(topModal);
             Debug.Log($"모달 닫기: {topModal}");
         }
     }
@@ -261,12 +293,52 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void CloseAllModals()
     {
+        if (screenUIs.ContainsKey(ScreenType.Main) && screenUIs[ScreenType.Main] is UICanvasMain mainUI)
+        {
+            mainUI.CloseAllPopups(); // 모달도 포함
+            activeModals.Clear();
+            Debug.Log("모든 모달 닫기");
+        }
+    }
+    
+    /// <summary>
+    /// 팝업 스택에서 특정 팝업 제거
+    /// </summary>
+    private void RemoveFromPopupStack(PopupType popupType)
+    {
+        Stack<PopupType> tempStack = new();
+        while (activePopups.Count > 0)
+        {
+            PopupType popup = activePopups.Pop();
+            if (popup != popupType)
+            {
+                tempStack.Push(popup);
+            }
+        }
+        while (tempStack.Count > 0)
+        {
+            activePopups.Push(tempStack.Pop());
+        }
+    }
+    
+    /// <summary>
+    /// 모달 스택에서 특정 모달 제거
+    /// </summary>
+    private void RemoveFromModalStack(ModalType modalType)
+    {
+        Stack<ModalType> tempStack = new();
         while (activeModals.Count > 0)
         {
             ModalType modal = activeModals.Pop();
-            modalUIs[modal].Close();
+            if (modal != modalType)
+            {
+                tempStack.Push(modal);
+            }
         }
-        Debug.Log("모든 모달 닫기");
+        while (tempStack.Count > 0)
+        {
+            activeModals.Push(tempStack.Pop());
+        }
     }
     
     #endregion
