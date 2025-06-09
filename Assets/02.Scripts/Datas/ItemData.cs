@@ -8,11 +8,11 @@ public enum ItemType
 
 public enum ItemRarity
 {
-    Common,     // 일반 (회색)
-    Uncommon,   // 고급 (초록)
-    Rare,       // 희귀 (파랑)
-    Epic,       // 전설 (보라)
-    Legendary   // 신화 (주황)
+    Common,     // 일반 (gray)
+    Uncommon,   // 고급 (green)
+    Rare,       // 희귀 (blue)
+    Epic,       // 전설 (magenta)
+    Legendary   // 신화 (yellow)
 }
 
 [CreateAssetMenu(fileName = "NewItemData", menuName = "Inventory/ItemData")]

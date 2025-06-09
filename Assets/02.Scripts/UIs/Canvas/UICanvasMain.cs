@@ -62,7 +62,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
     public void ShowInventory()
     {
         CloseAllPopups(); // 다른 팝업들 닫기
-        inventoryPopup?.Open();
+        inventoryPopup.Open();
         Debug.Log("인벤토리 팝업 열기");
     }
     
