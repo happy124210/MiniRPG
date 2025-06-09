@@ -67,7 +67,10 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
+    }
+
+    public void Initialize()
+    {
         InitializeUIs();
     }
     

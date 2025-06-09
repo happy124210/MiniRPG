@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InventorySlot : MonoBehaviour
+public class InventorySlot
 {
     public ItemData itemData = null;
     public bool isEquipped;

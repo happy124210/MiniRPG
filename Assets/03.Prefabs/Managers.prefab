@@ -59,8 +59,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e235f23fb969c9d4a8dcddc775be5042, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guiListRaw:
+  screenUIList:
   - {fileID: 0}
+  popupUIList: []
+  modalUIList: []
 --- !u!114 &8373134670860797058
 MonoBehaviour:
   m_ObjectHideFlags: 0
