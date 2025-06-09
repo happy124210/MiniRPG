@@ -19,7 +19,8 @@ public class EnemyData : ScriptableObject
     [Header("Combat")]
     public int attackPower;
     public int attackInterval;
-    public int attackRange;
+    public float attackRange;
+    public int attackCooldown;
     
     [Header("Reward")]
     public int goldReward;

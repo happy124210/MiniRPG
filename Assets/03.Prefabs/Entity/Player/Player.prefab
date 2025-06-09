@@ -1581,9 +1581,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d797694f6aba5c948b566939789dc639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  moveSpeed: 3
   targetEnemy: {fileID: 0}
-  detectRange: 5
+  detectRange: 3
 --- !u!114 &1375743359441046472
 MonoBehaviour:
   m_ObjectHideFlags: 0

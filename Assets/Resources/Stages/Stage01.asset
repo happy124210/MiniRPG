@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648b4560d621e1542a819ffbf33ce37f, type: 3}
   m_Name: Stage01
   m_EditorClassIdentifier: 
-  stageName: "\uCD95\uCD95\uD55C \uC12C"
+  stageName: "\uCD08\uC6D0 \uC9C0\uB300"
   stageID: 1
-  stagePrefab: {fileID: 0}
+  stagePrefab: {fileID: 5932533996123777023, guid: 02eca050b020f02468cdf52b7b495b2a,
+    type: 3}
+  enemyPool:
+  - {fileID: 11400000, guid: 617af2f71ea90044a8bfc7a1709d51f3, type: 2}
+  enemySpawnCounts: 
+  enemySpawnInterval: 2
   requiredKillCount: 10
   rewardPrefabs: []
-  rewardExp: 200
-  rewardGold: 1000
+  rewardExp: 100
+  rewardGold: 500

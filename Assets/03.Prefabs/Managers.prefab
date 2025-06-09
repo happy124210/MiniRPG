@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3714479355490015141}
   - component: {fileID: 7910391051795638368}
   - component: {fileID: 8373134670860797058}
+  - component: {fileID: 8232188836423306975}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -72,3 +73,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39be963ae022cd549bbf71d40fc63546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8232188836423306975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5992186404100659574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb43bd7a231f114188582f417f881bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentStage: {fileID: 0}
+  currentState: 0
+  spawnInterval: 3
+  maxEnemiesAtOnce: 10
+  enemiesPerSpawn: 5
+  spawnDistanceAhead: 15
+  spawnRangeWidth: 1.5
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295

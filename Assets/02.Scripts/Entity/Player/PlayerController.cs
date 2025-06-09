@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
     public void DetectEnemy()
     {
         // 0.1f마다 탐지
-        if (Time.time - lastDetectTime > DETECT_INTERVAL) return;
+        if (Time.time - lastDetectTime < DETECT_INTERVAL) return;
         lastDetectTime = Time.time;
         
         Collider[] enemies = Physics.OverlapSphere(transform.position, detectRange, LayerMask.GetMask("Enemy"));
