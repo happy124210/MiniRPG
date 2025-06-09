@@ -19,6 +19,14 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        UIManager.Instance.Initialize();
         UIManager.Instance.ShowScreen(ScreenType.Main);
+        
+        // TODO: 스테이지 선택 시 연결
+        StageData firstStage = Resources.Load<StageData>("Stages/Stage01");
+        if (firstStage != null)
+        {
+            StageManager.Instance.LoadStage(firstStage);
+        }
     }
 }
