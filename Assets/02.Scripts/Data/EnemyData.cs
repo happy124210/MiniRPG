@@ -12,8 +12,15 @@ public class EnemyData : ScriptableObject
     [Header("Basic Data")]
     public EnemyType type;
     public int maxHp;
+    
+    [Header("Movement")]
+    public float moveSpeed;
+    
+    [Header("Combat")]
     public int attackPower;
     public int attackInterval;
+    public float attackRange;
+    public int attackCooldown;
     
     [Header("Reward")]
     public int goldReward;
