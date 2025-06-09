@@ -19,12 +19,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        UIManager.Instance.GetGUI(UIType.Main).Initialization();
-        UIManager.Instance.ShowUI(UIType.Main);
+        UIManager.Instance.Initialize();
+        UIManager.Instance.ShowScreen(ScreenType.Main);
         
-        // TODO
-        // 버튼 클릭 시 호출로 변경
-        
+        // TODO: 스테이지 선택 시 연결
         StageData firstStage = Resources.Load<StageData>("Stages/Stage01");
         if (firstStage != null)
         {

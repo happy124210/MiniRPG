@@ -261,7 +261,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7910391051795638368, guid: 637d66c9ecd9a7d49b29b9b9eeae82a8,
         type: 3}
-      propertyPath: guiListRaw.Array.data[0]
+      propertyPath: popupUIList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7910391051795638368, guid: 637d66c9ecd9a7d49b29b9b9eeae82a8,
+        type: 3}
+      propertyPath: screenUIList.Array.data[0]
       value: 
       objectReference: {fileID: 1983718217}
     - target: {fileID: 8085674486816158924, guid: 637d66c9ecd9a7d49b29b9b9eeae82a8,

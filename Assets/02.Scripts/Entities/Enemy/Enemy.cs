@@ -129,9 +129,6 @@ public class Enemy : MonoBehaviour, IDamagable
         // 공격 애니메이션
         animHandler.PlayAttack();
     
-        // 아이들 상태로 (공격 중에는 멈춤)
-        animHandler.PlayIdle();
-    
         Debug.Log($"{name}이 플레이어에게 {damage} 데미지!");
     }
 
