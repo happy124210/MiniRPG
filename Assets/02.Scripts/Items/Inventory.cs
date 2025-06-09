@@ -174,6 +174,17 @@ public class Inventory : MonoBehaviour
         return null;
     }
     
+    
+    public int GetEmptySlotCount()
+    {
+        int count = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i].IsEmpty) count++;
+        }
+        return count;
+    }
+    
     // Public Getters
     public InventorySlot[] GetAllSlots() => slots;
     public InventorySlot GetSlot(int index) => (index >= 0 && index < slots.Length) ? slots[index] : null;
