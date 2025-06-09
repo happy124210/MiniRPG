@@ -135,7 +135,7 @@ public class EquipPopup : MonoBehaviour, IGUI
         if (equipButton != null)
         {
             bool isEquipped = slot.isEquipped;
-            equipButton.GetComponentInChildren<TextMeshProUGUI>().text = isEquipped ? "해제" : "파워업!";
+            equipButton.GetComponentInChildren<TextMeshProUGUI>().text = isEquipped ? "해제" : "장착";
         }
     }
     
