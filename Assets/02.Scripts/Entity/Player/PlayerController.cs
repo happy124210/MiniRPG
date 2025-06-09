@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,6 +11,9 @@ public class PlayerController : MonoBehaviour
     
     [field: Header("Combat")]
     [SerializeField] public float AttackInterval { get; private set; } = 1f;
+
+    private float lastDetectTime;
+    private const float DETECT_INTERVAL = 0.1f;
 
     public Transform targetEnemy;
     [SerializeField] private float detectRange = 5f;
@@ -73,6 +75,10 @@ public class PlayerController : MonoBehaviour
 
     public void DetectEnemy()
     {
+        // 0.1f마다 탐지
+        if (Time.time - lastDetectTime > DETECT_INTERVAL) return;
+        lastDetectTime = Time.time;
+        
         Collider[] enemies = Physics.OverlapSphere(transform.position, detectRange, LayerMask.GetMask("Enemy"));
 
         foreach (var col in enemies)

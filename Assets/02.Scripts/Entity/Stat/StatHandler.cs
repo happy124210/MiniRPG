@@ -37,12 +37,14 @@ public class StatHandler : MonoBehaviour
         OnStatChanged?.Invoke();
     }
 
+    
     public void RemoveModifier(StatModifier modifier)
     {
         modifiers.Remove(modifier);
         OnStatChanged?.Invoke();
     }
 
+    
     public void ModifyStat(StatType type, int value)
     {
         if (baseStats.ContainsKey(type))
@@ -56,12 +58,14 @@ public class StatHandler : MonoBehaviour
         OnStatChanged?.Invoke();
     }
 
+    
     public void SetBaseStat(StatType type, int value)
     {
         baseStats[type] = value;
         OnStatChanged?.Invoke();
     }
 
+    
     public bool IsDead()
     {
         return GetStat(StatType.Hp) <= 0;
