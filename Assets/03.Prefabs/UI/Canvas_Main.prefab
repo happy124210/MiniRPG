@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1616403857584607097
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1847,7 +1847,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7604237660159843404
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4625,6 +4625,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b280f625c53bd2c43974e8917c0d22a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageGaugeBar: {fileID: 0}
+  gaugeFillDuration: 0.8
+  gaugeFillEase: 9
+  punchScale: 0.15
+  punchDuration: 0.4
 --- !u!1 &5591123600895120495
 GameObject:
   m_ObjectHideFlags: 0
@@ -7247,7 +7252,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1598584399586456474
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8737,7 +8742,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2743368360049464445}
   m_Layer: 5
-  m_Name: Group_StageCount
+  m_Name: Group_WaveCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

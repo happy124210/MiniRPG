@@ -43,7 +43,7 @@ public class StageManager : MonoBehaviour
     public static event Action<StageData> OnStageStart;
     public static event Action<StageData> OnStageComplete;
     public static event Action<StageData> OnStageFailed;
-    public static event Action<int, int> OnKillCountChanged; // current, required
+    public static event Action<float> OnStageProgressChanged;
     public static event Action<Enemy> OnBossSpawned;
     public static event Action<Enemy> OnBossDefeated;
     
@@ -402,6 +402,13 @@ public class StageManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
         }
+        
+        if (enemy && enemy != currentBoss)
+        {
+            currentKillCount++;
+            //OnKillCountChanged?.Invoke(currentKillCount, currentStage.requiredKillCount);
+            OnStageProgressChanged?.Invoke(GetStageProgress());
+        }
     }
 
     /// <summary>
@@ -425,7 +432,6 @@ public class StageManager : MonoBehaviour
         {
             // 일반 몬스터 처치 처리
             currentKillCount++;
-            OnKillCountChanged?.Invoke(currentKillCount, currentStage.requiredKillCount);
             
             Debug.Log($" 적 처치! 게이지: ({currentKillCount}/{currentStage.requiredKillCount})");
             
@@ -530,6 +536,15 @@ public class StageManager : MonoBehaviour
     public bool IsPlaying()
     {
         return currentState == StageState.Playing || currentState == StageState.BossSpawned;
+    }
+    
+    /// <summary>
+    /// 스테이지 진행률 (0.0 ~ 1.0)
+    /// </summary>
+    public float GetStageProgress()
+    {
+        if (currentStage == null || currentStage.requiredKillCount == 0) return 0f;
+        return Mathf.Clamp01((float)currentKillCount / currentStage.requiredKillCount);
     }
     
     // 디버깅용 기즈모

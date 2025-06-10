@@ -97,7 +97,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   bossSpawnDelay: 2
-  bossSpawnDistance: 5
+  bossSpawnDistance: 15
 --- !u!114 &8876148012581213956
 MonoBehaviour:
   m_ObjectHideFlags: 0
