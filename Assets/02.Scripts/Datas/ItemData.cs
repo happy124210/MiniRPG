@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public enum ItemType
@@ -15,7 +16,7 @@ public enum ItemRarity
     Legendary   // 신화 (yellow)
 }
 
-[CreateAssetMenu(fileName = "NewItemData", menuName = "Inventory/ItemData")]
+[Serializable] [CreateAssetMenu(fileName = "NewItemData", menuName = "Inventory/ItemData")]
 public class ItemData : ScriptableObject
 {
     [Header("Basic Info")]

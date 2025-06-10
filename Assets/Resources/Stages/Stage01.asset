@@ -18,9 +18,10 @@ MonoBehaviour:
     type: 3}
   enemyPool:
   - {fileID: 11400000, guid: 617af2f71ea90044a8bfc7a1709d51f3, type: 2}
-  enemySpawnCounts: 
-  enemySpawnInterval: 2
+  - {fileID: 11400000, guid: 84d4ec11fd41ad940ad897f8cd21f394, type: 2}
   requiredKillCount: 10
-  rewardPrefabs: []
+  rewardItems:
+  - {fileID: 11400000, guid: fcada4ee2c1cac84f9228af2795c8491, type: 2}
+  - {fileID: 11400000, guid: 3d95a88655d7ef944855327eb1ec3dc3, type: 2}
   rewardExp: 100
   rewardGold: 500

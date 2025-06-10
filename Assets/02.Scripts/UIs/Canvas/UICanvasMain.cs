@@ -19,8 +19,6 @@ public class UICanvasMain : MonoBehaviour, IGUI
     {
         battleStatPanel = transform.FindChild<BattleStatPanel>("Group_Stat");
         battleStagePanel = transform.FindChild<BattleStagePanel>("Group_Stage");
-        
-        // 팝업들도 자동으로 찾기
         inventoryPopup = transform.FindChild<InventoryPopup>("InventoryPopup");
         shopPopup = transform.FindChild<ShopPopup>("ShopPopup");
         confirmModal = transform.FindChild<ConfirmModal>("ConfirmModal");

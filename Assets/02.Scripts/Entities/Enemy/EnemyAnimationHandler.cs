@@ -145,40 +145,4 @@ public class EnemyAnimationHandler : MonoBehaviour
     }
 
     #endregion
-
-    #region 유틸리티 메서드
-
-    /// <summary>
-    /// 현재 재생 중인 애니메이션 상태 확인
-    /// </summary>
-    public bool IsPlayingAnimation(string animationName)
-    {
-        if (animator == null) return false;
-        
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        return stateInfo.IsName(animationName);
-    }
-
-    /// <summary>
-    /// 현재 애니메이션이 끝났는지 확인
-    /// </summary>
-    public bool IsAnimationFinished()
-    {
-        if (animator == null) return true;
-        
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        return stateInfo.normalizedTime >= 1.0f;
-    }
-
-    /// <summary>
-    /// 애니메이션 속도 조절
-    /// </summary>
-    public void SetAnimationSpeed(float speed)
-    {
-        if (animator == null) return;
-        
-        animator.speed = speed;
-    }
-
-    #endregion
 }

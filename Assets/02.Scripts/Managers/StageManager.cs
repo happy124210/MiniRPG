@@ -8,6 +8,7 @@ public enum StageState
 {
     Loading,
     Playing,
+    BossSpawned,
     Completed,
     Failed
 }
@@ -21,23 +22,30 @@ public class StageManager : MonoBehaviour
     [SerializeField] private StageState currentState = StageState.Loading;
     
     [Header("Enemy Spawn")]
-    [SerializeField] private float spawnInterval = 2f;           // 2초마다 스폰 (더 빠르게)
-    [SerializeField] private int maxEnemiesAtOnce = 12;          // 동시 최대 적 수 증가
-    [SerializeField] private int enemiesPerSpawn = 2;            // 한 번에 스폰할 적 수
-    [SerializeField] private float spawnDistanceAhead = 15f;     // 플레이어 앞 몇 미터에서 스폰
-    [SerializeField] private float spawnRangeWidth = 4f;         // 좌우 스폰 범위 (좀 더 넓게)
+    [SerializeField] private float spawnInterval;           // 2초마다 스폰
+    [SerializeField] private int maxEnemiesAtOnce;          // 동시 최대 적 수
+    [SerializeField] private int enemiesPerSpawn;            // 한 번에 스폰할 적 수
+    [SerializeField] private float spawnDistanceAhead;     // 플레이어 앞쪽에서 스폰
+    [SerializeField] private float spawnRangeWidth;         // 좌우 스폰 범위
     [SerializeField] private LayerMask obstacleLayerMask = -1;   // 장애물 레이어 마스크
+    
+    [Header("Boss Spawn")]
+    [SerializeField] private float bossSpawnDelay;
+    [SerializeField] private float bossSpawnDistance;
     
     [Header("Stage Progress")]
     private int currentKillCount = 0;
     private int totalSpawnedCount = 0;
     private List<Enemy> activeEnemies = new();
+    private Enemy currentBoss = null;
     
     // Events
     public static event Action<StageData> OnStageStart;
     public static event Action<StageData> OnStageComplete;
     public static event Action<StageData> OnStageFailed;
     public static event Action<int, int> OnKillCountChanged; // current, required
+    public static event Action<Enemy> OnBossSpawned;
+    public static event Action<Enemy> OnBossDefeated;
     
     private Coroutine spawnCoroutine;
     
@@ -50,11 +58,8 @@ public class StageManager : MonoBehaviour
         }
         Instance = this;
     }
-    
-    private void Start()
-    {
-        // 플레이어 기반 스폰이므로 기본 스폰 포인트 생성 불필요
-    }
+
+    #region Stage LifeCycle
     
     /// <summary>
     /// 새로운 스테이지 로드
@@ -79,92 +84,217 @@ public class StageManager : MonoBehaviour
     {
         if (currentStage == null)
         {
-            Debug.LogError("스테이지 데이터가 없습니다!");
+            Debug.LogError("스테이지 데이터 없음 !!!");
             return;
         }
         
         currentState = StageState.Playing;
         
-        // 스테이지 프리팹 생성 (맵)
-        if (currentStage.stagePrefab != null)
+        // Pool에 현재 스테이지 전달, 풀 초기화
+        if (PoolManager.Instance != null)
         {
-            // 기존 맵 제거 (있다면)
-            GameObject existingMap = GameObject.FindGameObjectWithTag("StageMap");
-            if (existingMap != null)
-            {
-                Destroy(existingMap);
-            }
-            
-            GameObject stageMap = Instantiate(currentStage.stagePrefab);
-            stageMap.tag = "StageMap";
+            PoolManager.Instance.InitializeFromStageData(currentStage);
         }
         
+        // 스테이지 맵 생성
+        CreateStageMap();
+        
         // 적 스폰 시작
-        spawnCoroutine = StartCoroutine(SpawnEnemies());
+        spawnCoroutine = StartCoroutine(SpawnNormalEnemies());
         
         OnStageStart?.Invoke(currentStage);
         Debug.Log($"스테이지 시작: {currentStage.stageName}");
     }
     
     /// <summary>
-    /// 적 스폰 코루틴
+    /// 스테이지 맵 생성
     /// </summary>
-    private IEnumerator SpawnEnemies()
+    private void CreateStageMap()
     {
-        while (currentState == StageState.Playing && 
-               totalSpawnedCount < currentStage.requiredKillCount)
+        if (currentStage.stagePrefab == null) return;
+        
+        // 기존 맵 제거
+        GameObject existingMap = GameObject.FindGameObjectWithTag("StageMap");
+        if (existingMap != null)
         {
-            // 현재 활성 적 수가 최대치보다 적을 때만 스폰
+            Destroy(existingMap);
+        }
+        
+        // 새 맵 생성
+        GameObject stageMap = Instantiate(currentStage.stagePrefab);
+        stageMap.tag = "StageMap";
+        
+        Debug.Log($"스테이지 맵 생성: {stageMap.name}");
+    }
+    
+    /// <summary>
+    /// 스테이지 완료 처리
+    /// </summary>
+    private void CompleteStage()
+    {
+        currentState = StageState.Completed;
+        
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
+        
+        // 스테이지 완료 보상
+        GiveStageRewards();
+        
+        OnStageComplete?.Invoke(currentStage);
+        Debug.Log($"스테이지 완료: {currentStage.stageName}");
+    }
+    
+    /// <summary>
+    /// 스테이지 데이터 리셋
+    /// </summary>
+    private void ResetStageData()
+    {
+        currentKillCount = 0;
+        totalSpawnedCount = 0;
+        activeEnemies.Clear();
+        
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+        }
+    }
+
+    #endregion
+    
+    #region MonsterSpawn
+    
+    /// <summary>
+    /// 일반 몬스터 스폰 코루틴
+    /// </summary>
+    private IEnumerator SpawnNormalEnemies()
+    {
+        while (currentState == StageState.Playing)
+        {
             if (activeEnemies.Count < maxEnemiesAtOnce)
             {
-                // 한 번에 여러 마리 스폰
-                int spawnCount = Mathf.Min(enemiesPerSpawn, 
-                                          maxEnemiesAtOnce - activeEnemies.Count,
-                                          currentStage.requiredKillCount - totalSpawnedCount);
-                
+                int spawnCount = Mathf.Min(enemiesPerSpawn, maxEnemiesAtOnce - activeEnemies.Count);
+
                 for (int i = 0; i < spawnCount; i++)
                 {
-                    SpawnRandomEnemy();
+                    SpawnNormalEnemy();
                     totalSpawnedCount++;
-                    
-                    // 스폰 간 약간의 딜레이 (동시 스폰 방지)
                     yield return new WaitForSeconds(0.2f);
                 }
             }
             
             yield return new WaitForSeconds(spawnInterval);
         }
+
+        if (currentState == StageState.Playing)
+        {
+            yield return StartCoroutine(WaitAndSpawnBoss());
+        }
     }
     
     /// <summary>
-    /// 플레이어 앞쪽에 적 스폰
+    /// 일반 몬스터 스폰
     /// </summary>
-    private void SpawnRandomEnemy()
+    private void SpawnNormalEnemy()
     {
         Player player = CharacterManager.Player;
         if (player == null) return;
-        
+
         Vector3 spawnPosition = GetValidSpawnPosition(player.transform);
-        if (spawnPosition == Vector3.zero) return; // 유효한 위치를 찾지 못함
+        if (spawnPosition == Vector3.zero) return;
         
-        // TODO: 나중에 EnemyData 배열에서 랜덤하게 선택하도록 개선
-        // 지금은 기본 적 프리팹 사용 (임시)
-        GameObject enemyPrefab = Resources.Load<GameObject>("Enemies/Slime");
-        if (enemyPrefab == null)
-        {
-            Debug.LogError("적 프리팹을 찾을 수 없습니다!");
-            return;
-        }
+        EnemyData normalEnemyData = GetRandomNormalEnemyData();
+        if (normalEnemyData == null) return;
         
-        GameObject enemyObj = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-        Enemy enemy = enemyObj.GetComponent<Enemy>();
+        // EnemyPoolManager에서 적 가져오기
+        Enemy enemy = PoolManager.Instance.GetEnemy(normalEnemyData, spawnPosition, Quaternion.identity);
         
         if (enemy != null)
         {
             activeEnemies.Add(enemy);
-            // 적 사망 이벤트 구독
             StartCoroutine(WatchEnemyDeath(enemy));
         }
+    }
+
+    /// <summary>
+    /// 보스 스폰 대기 및 실행
+    /// </summary>
+    private IEnumerator WaitAndSpawnBoss()
+    {
+        // 남은 일반 몬스터 처치될 때까지 대기
+        
+        yield return new WaitForSeconds(bossSpawnDelay);
+
+        if (currentState == StageState.Playing)
+        {
+            SpawnBoss();
+        }
+    }
+
+    /// <summary>
+    /// 보스 몬스터 스폰
+    /// </summary>
+    private void SpawnBoss()
+    {
+        Player player = CharacterManager.Player;
+        
+        if (!player) return;
+        
+        // 플레이어 앞쪽 멀리에 보스 스폰
+        Vector3 spawnPosition = GetBossSpawnPosition(player.transform);
+        if (spawnPosition == Vector3.zero) return;
+        
+        // 해당 Stage 보스 데이터
+        EnemyData bossData = GetBossEnemyData();
+        if (bossData == null)
+        {
+            Debug.LogError("보스 데이터 찾을 수 없음 !!!");
+            return;
+        }
+        
+        Enemy boss = PoolManager.Instance.GetEnemy(bossData, spawnPosition, Quaternion.identity);
+
+        if (boss == null) return;
+        
+        currentBoss = boss;
+        activeEnemies.Add(boss);
+        currentState = StageState.BossSpawned;
+        
+        StartCoroutine(WatchBossDeath(boss));
+        
+        OnBossSpawned?.Invoke(boss);
+        Debug.Log($"보스 등장: {bossData.enemyName}");
+    }
+    
+    #endregion
+
+    /// <summary>
+    /// 랜덤한 일반 몬스터 데이터 가져오기
+    /// </summary>
+    private EnemyData GetRandomNormalEnemyData()
+    {
+        if (currentStage?.enemyPool == null) return null;
+
+        List<EnemyData> normalEnemies = new List<EnemyData>();
+        
+        foreach (var enemyData in currentStage.enemyPool)
+        {
+            if (enemyData && enemyData.type == EnemyType.Normal)
+            {
+                normalEnemies.Add(enemyData);
+            }
+        }
+
+        if (normalEnemies.Count > 0)
+        {
+            return normalEnemies[Random.Range(0, normalEnemies.Count)];
+        }
+        
+        // 일반 몬스터가 없으면 첫 번째 적 사용
+        Debug.LogWarning("⚠일반 몬스터 데이터가 없음 !!!");
+        return currentStage.enemyPool.Length > 0 ? currentStage.enemyPool[0] : null;
     }
     
     /// <summary>
@@ -183,10 +313,10 @@ public class StageManager : MonoBehaviour
             Vector3 rightVector = Vector3.Cross(playerForward, Vector3.up).normalized;
             
             Vector3 candidatePos = playerPos + 
-                                 playerForward * spawnDistanceAhead + 
-                                 rightVector * randomOffset;
+                                   playerForward * spawnDistanceAhead + 
+                                   rightVector * randomOffset;
                                  
-            // 땅 높이로 조정 (레이캐스트로 바닥 찾기)
+            // 땅 높이로 조정
             if (Physics.Raycast(candidatePos + Vector3.up * 10f, Vector3.down, out RaycastHit hit, 20f))
             {
                 candidatePos.y = hit.point.y;
@@ -212,9 +342,50 @@ public class StageManager : MonoBehaviour
         return Physics.CheckCapsule(
             position + Vector3.up * 0.5f,      // 하단
             position + Vector3.up * 1.5f,      // 상단
-            0.5f,                              // 반지름
-            obstacleLayerMask                  // 장애물 레이어
+            0.5f,                       // 반지름
+            obstacleLayerMask               // 장애물 레이어
         );
+    }
+    
+    /// <summary>
+    /// StageData에서 보스 타입 적 찾기
+    /// </summary>
+    /// <returns>EnemyData 보스 데이터</returns>
+    private EnemyData GetBossEnemyData()
+    {
+        if (currentStage?.enemyPool == null) return null;
+
+        foreach (EnemyData enemyData in currentStage.enemyPool)
+        {
+            if (enemyData != null && enemyData.type == EnemyType.Boss)
+            {
+                return enemyData;
+            }
+        }
+        
+        // 보스가 없으면
+        Debug.LogError("보스 데이터 없음 !!!");
+        return currentStage.enemyPool.Length > 0 ? currentStage.enemyPool[0] : null;
+    }
+    
+    /// <summary>
+    /// 플레이어 기준 보스 스폰 위치 계산
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns>Vector3 보스 스폰 위치</returns>
+    private Vector3 GetBossSpawnPosition(Transform player)
+    {
+        Vector3 playerPos = player.position;
+        Vector3 playerForward = player.forward;
+        
+        Vector3 bossSpawnPos = playerPos + playerForward * bossSpawnDistance;
+
+        if (Physics.Raycast(bossSpawnPos + Vector3.up * 10f, Vector3.down, out RaycastHit hit, 20f))
+        {
+            bossSpawnPos.y = hit.point.y;
+        }
+        
+        return bossSpawnPos;
     }
     
     /// <summary>
@@ -222,80 +393,78 @@ public class StageManager : MonoBehaviour
     /// </summary>
     private IEnumerator WatchEnemyDeath(Enemy enemy)
     {
-        while (enemy != null && !enemy.IsDead)
+        while (enemy && !enemy.IsDead)
         {
             yield return new WaitForSeconds(0.1f);
         }
-        
-        if (enemy != null)
-        {
-            OnEnemyKilled(enemy);
-        }
     }
-    
+
     /// <summary>
     /// 적 사망 처리
     /// </summary>
     public void OnEnemyKilled(Enemy enemy)
     {
+        if (enemy == null) return;
+        
         if (activeEnemies.Contains(enemy))
         {
             activeEnemies.Remove(enemy);
         }
         
-        currentKillCount++;
-        OnKillCountChanged?.Invoke(currentKillCount, currentStage.requiredKillCount);
-        
-        // 보상 지급
-        GiveRewards(enemy);
-        
-        // 스테이지 완료 체크
-        CheckStageComplete();
-        
-        Debug.Log($"적 처치! ({currentKillCount}/{currentStage.requiredKillCount})");
-    }
-    
-    /// <summary>
-    /// 보상 지급
-    /// </summary>
-    private void GiveRewards(Enemy enemy)
-    {
-        Player player = CharacterManager.Player;
-        if (player == null) return;
-        
-        // 경험치, 골드 지급 (EnemyData에서 가져와야 하는데 현재 구조상 임시로 고정값)
-        player.StatHandler.ModifyStat(StatType.Exp, 10);
-        player.StatHandler.ModifyStat(StatType.Gold, 5);
-    }
-    
-    /// <summary>
-    /// 스테이지 완료 체크
-    /// </summary>
-    private void CheckStageComplete()
-    {
-        if (currentKillCount >= currentStage.requiredKillCount)
+        if (enemy == currentBoss)
         {
-            CompleteStage();
+            // 보스 처치 처리
+            OnBossKilled(enemy);
+        }
+        else
+        {
+            // 일반 몬스터 처치 처리
+            currentKillCount++;
+            OnKillCountChanged?.Invoke(currentKillCount, currentStage.requiredKillCount);
+            
+            Debug.Log($" 적 처치! 게이지: ({currentKillCount}/{currentStage.requiredKillCount})");
+            
+            // 킬 카운트가 목표에 도달하면 보스 스폰
+            if (currentKillCount >= currentStage.requiredKillCount && currentState == StageState.Playing)
+            {
+                Debug.Log("목표 처치 수 달성! 보스 스폰 준비");
+                StartCoroutine(WaitAndSpawnBoss());
+            }
+        }
+        
+        if (PoolManager.Instance)
+        {
+            PoolManager.Instance.ReturnEnemy(enemy);
         }
     }
     
     /// <summary>
-    /// 스테이지 완료 처리
+    /// 보스 사망 감지
     /// </summary>
-    private void CompleteStage()
+    private IEnumerator WatchBossDeath(Enemy boss)
     {
-        currentState = StageState.Completed;
-        
-        if (spawnCoroutine != null)
+        while (boss && !boss.IsDead)
         {
-            StopCoroutine(spawnCoroutine);
+            yield return new WaitForSeconds(0.1f);
         }
+
+        if (boss)
+        {
+            OnBossKilled(boss);
+        }
+    }
+    
+    /// <summary>
+    /// 보스 사망 처리
+    /// </summary>
+    /// <param name="boss"></param>
+    private void OnBossKilled(Enemy boss)
+    {
+        currentBoss = null;
+        OnBossDefeated?.Invoke(boss);
         
-        // 스테이지 완료 보상
-        GiveStageRewards();
-        
-        OnStageComplete?.Invoke(currentStage);
-        Debug.Log($"스테이지 완료: {currentStage.stageName}");
+        CompleteStage();
+        Debug.Log("보스 처치 완료");
     }
     
     /// <summary>
@@ -306,26 +475,9 @@ public class StageManager : MonoBehaviour
         Player player = CharacterManager.Player;
         if (player == null) return;
         
-        player.StatHandler.ModifyStat(StatType.Exp, currentStage.rewardExp);
-        player.StatHandler.ModifyStat(StatType.Gold, currentStage.rewardGold);
-        
-        // 보상 아이템 생성 (나중에 구현)
-        // SpawnRewardItems();
-    }
-    
-    /// <summary>
-    /// 스테이지 데이터 리셋
-    /// </summary>
-    private void ResetStageData()
-    {
-        currentKillCount = 0;
-        totalSpawnedCount = 0;
-        activeEnemies.Clear();
-        
-        if (spawnCoroutine != null)
-        {
-            StopCoroutine(spawnCoroutine);
-        }
+        // TODO: 보상 아이템 지급
+        // player.StatHandler.ModifyStat(StatType.Exp, currentStage.rewardExp);
+        // player.StatHandler.ModifyStat(StatType.Gold, currentStage.rewardGold);
     }
     
     // Public Getters
@@ -334,8 +486,15 @@ public class StageManager : MonoBehaviour
     public int CurrentKillCount => currentKillCount;
     public int RequiredKillCount => currentStage?.requiredKillCount ?? 0;
     public List<Enemy> ActiveEnemies => activeEnemies;
+    public Enemy CurrentBoss => currentBoss;
+    public bool IsBossStage => currentState == StageState.BossSpawned;
     
-    // 디버깅용 기즈모 (Scene 뷰에서 스폰 범위 표시)
+    public bool IsPlaying()
+    {
+        return currentState == StageState.Playing || currentState == StageState.BossSpawned;
+    }
+    
+    // 디버깅용 기즈모
     private void OnDrawGizmos()
     {
         if (CharacterManager.Player == null) return;

@@ -12,10 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3981daeea48c374eab71cedb300fc61, type: 3}
   m_Name: TestArmor
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
-  itemType: 0
-  itemRarity: 0
-  icon: {fileID: 0}
-  sellPrice: 0
-  buyPrice: 0
+  itemName: "\uB18D\uBD80 \uC870\uB07C"
+  description: "\uB0A1\uC558\uB2E4"
+  itemType: 1
+  itemRarity: 2
+  icon: {fileID: 1692742518842296893, guid: cea8186578848314b86d47c6daedf32d, type: 3}
+  statModifiers:
+  - type: 0
+    value: 50
+    source: Item
+  - type: 10
+    value: 7
+    source: Item
+  sellPrice: 700
+  buyPrice: 1400
