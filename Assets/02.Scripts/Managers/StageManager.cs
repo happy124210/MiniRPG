@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -506,9 +507,8 @@ public class StageManager : MonoBehaviour
     {
         currentBoss = null;
         OnBossDefeated?.Invoke(boss);
-        
-        CompleteStage();
-        Debug.Log("보스 처치 완료");
+    
+        CharacterManager.Player.Controller.IsMoving = false;
     }
     
     /// <summary>
