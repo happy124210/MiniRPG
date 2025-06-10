@@ -7,10 +7,10 @@ public class UICanvasMain : MonoBehaviour, IGUI
     [Header("Main UI Panels")]
     [SerializeField] private BattleStatPanel battleStatPanel;
     [SerializeField] private BattleStagePanel battleStagePanel;
-    [SerializeField] private StageClearPopup stageClearPopup;
     
     [Header("Popups")]
     [SerializeField] private InventoryPopup inventoryPopup;
+    [SerializeField] private StageClearPopup stageClearPopup;
     [SerializeField] private ShopPopup shopPopup;
     
     [Header("Modals")]
@@ -22,8 +22,8 @@ public class UICanvasMain : MonoBehaviour, IGUI
         battleStagePanel = transform.FindChild<BattleStagePanel>("Group_BattleStagePanel");
         inventoryPopup = transform.FindChild<InventoryPopup>("Group_InventoryPopup");
         stageClearPopup = transform.FindChild<StageClearPopup>("Group_StageClearPopup");
-        shopPopup = transform.FindChild<ShopPopup>("Group_ShopPopup");
-        confirmModal = transform.FindChild<ConfirmModal>("Group_ConfirmModal");
+        //shopPopup = transform.FindChild<ShopPopup>("Group_ShopPopup");
+        //confirmModal = transform.FindChild<ConfirmModal>("Group_ConfirmModal");
     }
 
     public void Initialization()
@@ -35,10 +35,10 @@ public class UICanvasMain : MonoBehaviour, IGUI
         // 팝업들 초기화
         inventoryPopup?.Initialization();
         stageClearPopup?.Initialization();
-        shopPopup?.Initialization();
+        //shopPopup?.Initialization();
         
         // 모달들 초기화
-        confirmModal?.Initialization();
+        //confirmModal?.Initialization();
         
         // 팝업들 시작 시 비활성화
         CloseAllPopups();
@@ -75,7 +75,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
     public void ShowShop()
     {
         CloseAllPopups(); // 다른 팝업들 닫기
-        shopPopup?.Open();
+        //shopPopup?.Open();
         Debug.Log("상점 팝업 열기");
     }
     
@@ -84,7 +84,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
     /// </summary>
     public void ShowConfirm()
     {
-        confirmModal?.Open();
+        //confirmModal?.Open();
         Debug.Log("확인 모달 열기");
     }
     
@@ -101,7 +101,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
     /// </summary>
     public void CloseShop()
     {
-        shopPopup?.Close();
+        //shopPopup?.Close();
     }
     
     /// <summary>
@@ -109,7 +109,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
     /// </summary>
     public void CloseConfirm()
     {
-        confirmModal?.Close();
+        //confirmModal?.Close();
     }
     
     /// <summary>
@@ -118,8 +118,8 @@ public class UICanvasMain : MonoBehaviour, IGUI
     public void CloseAllPopups()
     {
         inventoryPopup?.Close();
-        shopPopup?.Close();
-        confirmModal?.Close();
+        stageClearPopup?.Close();
+        //shopPopup?.Close();
     }
     
     /// <summary>

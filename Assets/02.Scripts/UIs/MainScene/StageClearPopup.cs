@@ -111,6 +111,7 @@ public class StageClearPopup : MonoBehaviour, IGUI
     public void Close()
     {
         gameObject.SetActive(false);
+        
         rewardPanel.SetActive(false);
         rewardsPanel.SetActive(false);
     }

@@ -26,7 +26,8 @@ public class BattleStatPanel : MonoBehaviour, IGUI
         stat = CharacterManager.Player.StatHandler;
         stat.OnStatChanged += UpdateUI;
         UpdateUI();
-        //Close();
+        
+        Close();
     }
 
     public void OnDisable()

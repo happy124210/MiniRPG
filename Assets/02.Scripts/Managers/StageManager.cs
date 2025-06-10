@@ -23,7 +23,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private StageState currentState = StageState.Loading;
     
     [Header("Enemy Spawn")]
-    [SerializeField] private float spawnInterval;           // 2초마다 스폰
+    [SerializeField] private float spawnInterval;           // 스폰 간격
     [SerializeField] private int maxEnemiesAtOnce;          // 동시 최대 적 수
     [SerializeField] private int enemiesPerSpawn;            // 한 번에 스폰할 적 수
     [SerializeField] private float spawnDistanceAhead;     // 플레이어 앞쪽에서 스폰
@@ -49,6 +49,19 @@ public class StageManager : MonoBehaviour
     public static event Action<Enemy> OnBossDefeated;
     
     private Coroutine spawnCoroutine;
+    
+    private void Reset()
+    {
+        spawnInterval = 2f;
+        maxEnemiesAtOnce = 12;
+        enemiesPerSpawn = 4;
+        spawnDistanceAhead = 15f;
+        spawnRangeWidth = 4f;
+        bossSpawnDelay = 2f;
+        bossSpawnDistance = 20f;
+        obstacleLayerMask = -1;
+    }
+    
     
     private void Awake()
     {
