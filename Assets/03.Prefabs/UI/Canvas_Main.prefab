@@ -4625,7 +4625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b280f625c53bd2c43974e8917c0d22a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageGaugeBar: {fileID: 0}
+  stageGaugeBar: {fileID: 3608111037236724413}
   gaugeFillDuration: 0.8
   gaugeFillEase: 9
   punchScale: 0.15
