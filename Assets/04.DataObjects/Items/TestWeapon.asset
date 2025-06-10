@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3981daeea48c374eab71cedb300fc61, type: 3}
+  m_Name: TestWeapon
+  m_EditorClassIdentifier: 
+  itemName: "\uBD95\uB300 \uAC80"
+  description: "\uBA4B\uC9C0\uB2E4"
+  itemType: 0
+  itemRarity: 3
+  icon: {fileID: 712035800519618848, guid: 5555116c8467a454c8c90c5cece8dc84, type: 3}
+  powerLevel: 12
+  statModifiers:
+  - type: 2
+    value: 10
+    source: Item
+  - type: 10
+    value: 13
+    source: Item
+  sellPrice: 1700
+  buyPrice: 3400

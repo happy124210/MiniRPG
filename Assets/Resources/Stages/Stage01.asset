@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 648b4560d621e1542a819ffbf33ce37f, type: 3}
+  m_Name: Stage01
+  m_EditorClassIdentifier: 
+  stageName: "\uCD08\uC6D0 \uC9C0\uB300"
+  stageID: 1
+  stagePrefab: {fileID: 5932533996123777023, guid: 02eca050b020f02468cdf52b7b495b2a,
+    type: 3}
+  enemyPool:
+  - {fileID: 11400000, guid: 617af2f71ea90044a8bfc7a1709d51f3, type: 2}
+  - {fileID: 11400000, guid: 16f46b70fbe79b741866a093cb34d879, type: 2}
+  requiredKillCount: 10
+  rewardItem: {fileID: 11400000, guid: fcada4ee2c1cac84f9228af2795c8491, type: 2}
+  rewardExp: 100
+  rewardGold: 500
+  rewardGem: 5
