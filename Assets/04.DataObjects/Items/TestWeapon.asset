@@ -17,6 +17,7 @@ MonoBehaviour:
   itemType: 0
   itemRarity: 3
   icon: {fileID: 712035800519618848, guid: 5555116c8467a454c8c90c5cece8dc84, type: 3}
+  powerLevel: 12
   statModifiers:
   - type: 2
     value: 10

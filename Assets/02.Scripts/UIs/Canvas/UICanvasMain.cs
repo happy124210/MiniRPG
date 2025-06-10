@@ -7,6 +7,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
     [Header("Main UI Panels")]
     [SerializeField] private BattleStatPanel battleStatPanel;
     [SerializeField] private BattleStagePanel battleStagePanel;
+    [SerializeField] private StageClearPopup stageClearPopup;
     
     [Header("Popups")]
     [SerializeField] private InventoryPopup inventoryPopup;
@@ -17,11 +18,12 @@ public class UICanvasMain : MonoBehaviour, IGUI
 
     public void Reset()
     {
-        battleStatPanel = transform.FindChild<BattleStatPanel>("Group_Stat");
-        battleStagePanel = transform.FindChild<BattleStagePanel>("Group_Stage");
-        inventoryPopup = transform.FindChild<InventoryPopup>("InventoryPopup");
-        shopPopup = transform.FindChild<ShopPopup>("ShopPopup");
-        confirmModal = transform.FindChild<ConfirmModal>("ConfirmModal");
+        battleStatPanel = transform.FindChild<BattleStatPanel>("Group_BattleStatPanel");
+        battleStagePanel = transform.FindChild<BattleStagePanel>("Group_BattleStagePanel");
+        inventoryPopup = transform.FindChild<InventoryPopup>("Group_InventoryPopup");
+        stageClearPopup = transform.FindChild<StageClearPopup>("Group_StageClearPopup");
+        shopPopup = transform.FindChild<ShopPopup>("Group_ShopPopup");
+        confirmModal = transform.FindChild<ConfirmModal>("Group_ConfirmModal");
     }
 
     public void Initialization()
@@ -32,7 +34,10 @@ public class UICanvasMain : MonoBehaviour, IGUI
         
         // 팝업들 초기화
         inventoryPopup?.Initialization();
+        stageClearPopup?.Initialization();
         shopPopup?.Initialization();
+        
+        // 모달들 초기화
         confirmModal?.Initialization();
         
         // 팝업들 시작 시 비활성화

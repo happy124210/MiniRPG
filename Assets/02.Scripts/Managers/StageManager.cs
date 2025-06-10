@@ -509,6 +509,7 @@ public class StageManager : MonoBehaviour
         OnBossDefeated?.Invoke(boss);
     
         CharacterManager.Player.Controller.IsMoving = false;
+        CompleteStage();
     }
     
     /// <summary>

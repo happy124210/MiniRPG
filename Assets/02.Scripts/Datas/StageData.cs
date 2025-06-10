@@ -13,7 +13,8 @@ public class StageData : ScriptableObject
     public int requiredKillCount; // 보스 소환까지 필요한 처치 수
     
     [Header("보상")]
-    public ItemData[] rewardItems; 
+    public ItemData rewardItem; 
     public int rewardExp;
     public int rewardGold;
+    public int rewardGem;
 }

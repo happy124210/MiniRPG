@@ -25,6 +25,7 @@ public class ItemData : ScriptableObject
     public ItemType itemType;
     public ItemRarity itemRarity;
     public Sprite icon;
+    public int powerLevel;
     
     [Header("Stats")]
     public StatModifier[] statModifiers;
