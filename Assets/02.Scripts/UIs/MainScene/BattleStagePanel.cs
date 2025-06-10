@@ -4,6 +4,8 @@ public class BattleStagePanel : MonoBehaviour, IGUI
 {
     public GameObject GUIObject => gameObject;
     
+    [Header("Stage Info")]
+    
     public void Initialization()
     {
         

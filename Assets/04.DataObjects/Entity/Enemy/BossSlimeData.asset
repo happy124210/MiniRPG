@@ -15,12 +15,9 @@ MonoBehaviour:
   type: 1
   maxHp: 50
   moveSpeed: 1
-  attackPower: 20
-  attackInterval: 3
+  attackPower: 15
   attackRange: 3
   attackCooldown: 3
-  goldReward: 100
-  expReward: 100
   enemyName: BossSlime
   enemyPrefab: {fileID: 1633065950122561223, guid: 9d839a4ea8f72de4bb93227da9bc0444,
     type: 3}

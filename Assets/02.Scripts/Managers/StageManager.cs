@@ -154,12 +154,15 @@ public class StageManager : MonoBehaviour
     {
         currentKillCount = 0;
         totalSpawnedCount = 0;
-        activeEnemies.Clear();
+        currentBoss = null;
         
         if (spawnCoroutine != null)
         {
             StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
         }
+        
+        ClearAllActiveEnemies();
     }
 
     #endregion
@@ -229,6 +232,8 @@ public class StageManager : MonoBehaviour
 
         if (currentState == StageState.Playing)
         {
+            ClearRemainingEnemies();
+            
             SpawnBoss();
         }
     }
@@ -437,6 +442,39 @@ public class StageManager : MonoBehaviour
             PoolManager.Instance.ReturnEnemy(enemy);
         }
     }
+
+    private void ClearRemainingEnemies()
+    {
+        // 복사본 생성 후 처리
+        List<Enemy> enemiesToClear = new List<Enemy>();
+
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy && enemy != currentBoss)
+            {
+                enemiesToClear.Add(enemy);
+            }
+        }
+        
+        foreach (var enemy in enemiesToClear)
+        {
+            enemy.ForceKill();
+        }
+    }
+    
+    /// <summary>
+    /// 모든 활성 적들 정리 (스테이지 리셋용)
+    /// </summary>
+    private void ClearAllActiveEnemies()
+    {
+        if (PoolManager.Instance != null)
+        {
+            PoolManager.Instance.ReturnAllActiveEnemies();
+        }
+        
+        activeEnemies.Clear();
+    }
+
     
     /// <summary>
     /// 보스 사망 감지

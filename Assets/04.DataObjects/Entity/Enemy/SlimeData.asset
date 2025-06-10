@@ -16,11 +16,8 @@ MonoBehaviour:
   maxHp: 10
   moveSpeed: 2
   attackPower: 5
-  attackInterval: 1
   attackRange: 1.5
   attackCooldown: 2
-  goldReward: 0
-  expReward: 0
   enemyName: Slime
   enemyPrefab: {fileID: 5439626921401804965, guid: 637cf9167c02ee64586b8df513f5fca4,
     type: 3}

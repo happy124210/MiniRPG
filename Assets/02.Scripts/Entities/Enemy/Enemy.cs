@@ -200,6 +200,14 @@ public class Enemy : MonoBehaviour, IDamagable
     
         Debug.Log($"{name}이 플레이어에게 {damage} 데미지!");
     }
+    
+    
+    public void ForceKill()
+    {
+        if (isDead) return;
+        
+        TakeDamage(data.maxHp);
+    }
 
     
     // public getters
