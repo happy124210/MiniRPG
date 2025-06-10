@@ -34,10 +34,50 @@ public class Enemy : MonoBehaviour, IDamagable
     
     private void Start()
     {
-        animHandler.SetOverrideController(data.overrideController);
+        if (data != null)
+        {
+            InitializeWithData(data);
+        }
+    }
+    
+    /// <summary>
+    /// 풀에서 가져올 때 호출되는 초기화 메서드
+    /// </summary>
+    public void InitializeFromPool(EnemyData enemyData)
+    {
+        InitializeWithData(enemyData);
+        Debug.Log($"[Enemy] {enemyData.enemyName} 풀에서 초기화됨");
+    }
+    
+    /// <summary>
+    /// 초기화 로직
+    /// </summary>
+    private void InitializeWithData(EnemyData enemyData)
+    {
+        data = enemyData;
         
+        // 애니메이션 override 설정
+        if (animHandler != null && data.overrideController != null)
+        {
+            animHandler.SetOverrideController(data.overrideController);
+        }
+        
+        // 스탯
         currentHp = data.maxHp;
-        animHandler.PlayIdle();
+        isDead = false;
+        lastAttackTime = 0f;
+        
+        // 컴포넌트
+        if (enemyCollider != null)
+        {
+            enemyCollider.enabled = true;
+        }
+        
+        // 기본 애니메이션 상태로 설정
+        if (animHandler != null)
+        {
+            animHandler.PlayIdle();
+        }
     }
     
     
@@ -92,7 +132,36 @@ public class Enemy : MonoBehaviour, IDamagable
     
     private void OnDie()
     {
-        Destroy(gameObject);
+        if (StageManager.Instance)
+        {
+            StageManager.Instance.OnEnemyKilled(this);
+        }
+    }
+    
+    /// <summary>
+    /// 풀로 반환되기 전 정리 작업
+    /// </summary>
+    public void OnReturnToPool()
+    {
+        // 코루틴 정리
+        StopAllCoroutines();
+        
+        // 상태 리셋
+        isDead = false;
+        currentHp = 0;
+        lastAttackTime = 0f;
+        
+        // 애니메이션 리셋
+        if (animHandler != null)
+        {
+            animHandler.PlayIdle();
+        }
+        
+        // 콜라이더 활성화
+        if (enemyCollider != null)
+        {
+            enemyCollider.enabled = true;
+        }
     }
     
     private void ChasePlayer(Player target)
@@ -131,8 +200,19 @@ public class Enemy : MonoBehaviour, IDamagable
     
         Debug.Log($"{name}이 플레이어에게 {damage} 데미지!");
     }
+    
+    
+    public void ForceKill()
+    {
+        if (isDead) return;
+        
+        TakeDamage(data.maxHp);
+    }
 
     
     // public getters
-    public EnemyType GetEnemyType => data.type;
+    public EnemyType GetEnemyType => data?.type ?? EnemyType.Normal;
+    public EnemyData GetEnemyData => data;
+    public int GetCurrentHp => currentHp;
+    public int GetMaxHp => data?.maxHp ?? 0;
 }

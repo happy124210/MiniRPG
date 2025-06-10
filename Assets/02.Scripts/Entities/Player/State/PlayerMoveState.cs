@@ -25,6 +25,12 @@ public class PlayerMoveState : IState
             return;
         }
         
+        if (!player.CanMove())
+        {
+            player.StateMachine.ChangeState(new PlayerIdleState(player));
+            return;
+        }
+        
         player.MoveForward();
     }
 

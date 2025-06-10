@@ -1,14 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-// UI 계층 타입
-public enum UILayerType
-{
-    Screen,    // 전체 화면 UI
-    Popup,     // 팝업 UI  
-    Modal      // 모달 UI (확인창 등)
-}
 
 // 스크린 타입 (전체 화면을 차지하는 UI)
 public enum ScreenType
@@ -44,8 +35,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<MonoBehaviour> screenUIList;
     private Dictionary<ScreenType, IGUI> screenUIs = new();
     
-    // Popup과 Modal은 UICanvasMain에서 관리하므로 제거
-    
     // 현재 상태
     private ScreenType currentScreen = ScreenType.Main;
     private Stack<PopupType> activePopups = new();
@@ -61,8 +50,6 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
-        // 여기서는 초기화하지 않음 - GameManager에서 호출할 때까지 대기
     }
     
     /// <summary>
@@ -72,7 +59,8 @@ public class UIManager : MonoBehaviour
     {
         InitializeUIs();
         Debug.Log("UIManager 초기화 완료");
-    }
+    } 
+    
     
     private void InitializeUIs()
     {

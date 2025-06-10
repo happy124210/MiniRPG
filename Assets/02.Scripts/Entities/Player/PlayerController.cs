@@ -15,7 +15,8 @@ public class PlayerController : MonoBehaviour
     private float lastDetectTime;
     private const float DETECT_INTERVAL = 0.1f;
 
-    public Transform targetEnemy;
+    public bool IsMoving { get; set; } = true;
+    [SerializeField] private Transform targetEnemy;
     [SerializeField] private float detectRange = 5f;
     
     
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     public void MoveForward()
     {
+        if (!IsMoving) return;
+        
         transform.Translate(Vector3.forward * (Time.deltaTime * moveSpeed));
     }
 
@@ -61,7 +64,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player dead");
     }
     
-    public bool CanMove() => true;
+    public bool CanMove() => IsMoving;
 
     public bool IsEnemyInRange()
     {

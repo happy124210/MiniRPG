@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8085674486816158924}
   - component: {fileID: 3714479355490015141}
-  - component: {fileID: 7910391051795638368}
   - component: {fileID: 8373134670860797058}
-  - component: {fileID: 8232188836423306975}
+  - component: {fileID: 8876148012581213956}
+  - component: {fileID: 7153987900422405597}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -47,22 +47,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f805280e906de23499e55b07df82644b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7910391051795638368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5992186404100659574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e235f23fb969c9d4a8dcddc775be5042, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  screenUIList:
-  - {fileID: 0}
-  popupUIList: []
-  modalUIList: []
 --- !u!114 &8373134670860797058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39be963ae022cd549bbf71d40fc63546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8232188836423306975
+--- !u!114 &8876148012581213956
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -84,16 +68,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 5992186404100659574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cb43bd7a231f114188582f417f881bf, type: 3}
+  m_Script: {fileID: 11500000, guid: b2ffc199b70f4304e98e12c27def45ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStage: {fileID: 0}
-  currentState: 0
-  spawnInterval: 3
-  maxEnemiesAtOnce: 10
-  enemiesPerSpawn: 5
-  spawnDistanceAhead: 15
-  spawnRangeWidth: 1.5
-  obstacleLayerMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  enemyPools: []
+  poolContainer: {fileID: 0}
+--- !u!114 &7153987900422405597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5992186404100659574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e285dbfd9802324d9c7f5f08de40979, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadePanel: {fileID: 0}
+  fadeCanvasGroup: {fileID: 0}
+  fadeDuration: 0.5
+  loadingPanel: {fileID: 0}
+  showLoadingScreen: 1
