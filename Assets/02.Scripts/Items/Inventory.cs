@@ -8,6 +8,10 @@ public class Inventory : MonoBehaviour
     
     private InventorySlot[] slots;
     
+    // 초기 아이템
+    [SerializeField] private ItemData[] testItems;
+    
+    
     // Events
     public static event Action<int, InventorySlot> OnSlotChanged; // 슬롯 변경 시
     public static event Action<ItemData> OnItemAdded;
@@ -18,14 +22,18 @@ public class Inventory : MonoBehaviour
     {
         InitializeInventory();
     }
-
-
+    
     private void InitializeInventory()
     {
         slots = new InventorySlot[inventorySize];
         for (int i = 0; i < inventorySize; i++)
         {
             slots[i] = new InventorySlot();
+        }
+
+        foreach (var testItem in testItems)
+        {
+            AddItem(testItem);
         }
     }
 
