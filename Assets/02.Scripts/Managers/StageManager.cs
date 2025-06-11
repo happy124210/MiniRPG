@@ -154,9 +154,6 @@ public class StageManager : MonoBehaviour
             spawnCoroutine = null;
         }
         
-        // 스테이지 완료 보상
-        GiveStageRewards();
-        
         OnStageComplete?.Invoke(currentStage);
         Debug.Log($"스테이지 완료: {currentStage.stageName}");
     }
@@ -312,7 +309,7 @@ public class StageManager : MonoBehaviour
         }
         
         // 일반 몬스터가 없으면 첫 번째 적 사용
-        Debug.LogWarning("⚠일반 몬스터 데이터가 없음 !!!");
+        Debug.LogWarning("일반 몬스터 데이터가 없음 !!!");
         return currentStage.enemyPool.Length > 0 ? currentStage.enemyPool[0] : null;
     }
     
@@ -444,9 +441,6 @@ public class StageManager : MonoBehaviour
         }
         else
         {
-            // 일반 몬스터 처치 처리
-            currentKillCount++;
-            
             Debug.Log($" 적 처치! 게이지: ({currentKillCount}/{currentStage.requiredKillCount})");
             
             // 킬 카운트가 목표에 도달하면 보스 스폰
@@ -515,7 +509,6 @@ public class StageManager : MonoBehaviour
     /// <summary>
     /// 보스 사망 처리
     /// </summary>
-    /// <param name="boss"></param>
     private void OnBossKilled(Enemy boss)
     {
         currentBoss = null;
@@ -528,14 +521,14 @@ public class StageManager : MonoBehaviour
     /// <summary>
     /// 스테이지 완료 보상
     /// </summary>
-    private void GiveStageRewards()
+    public void GiveStageRewards()
     {
         Player player = CharacterManager.Player;
         if (player == null) return;
         
-        // TODO: 보상 아이템 지급
-        // player.StatHandler.ModifyStat(StatType.Exp, currentStage.rewardExp);
-        // player.StatHandler.ModifyStat(StatType.Gold, currentStage.rewardGold);
+        player.StatHandler.ModifyStat(StatType.Exp, currentStage.rewardExp);
+        player.StatHandler.ModifyStat(StatType.Gold, currentStage.rewardGold);
+        player.StatHandler.ModifyStat(StatType.Gem, currentStage.rewardGem);
     }
     
     // Public Getters
