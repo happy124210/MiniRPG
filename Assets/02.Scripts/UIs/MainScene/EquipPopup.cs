@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class EquipPopup : MonoBehaviour, IGUI
@@ -9,7 +10,7 @@ public class EquipPopup : MonoBehaviour, IGUI
     [SerializeField] private Image selectedItemImage;
     [SerializeField] private TextMeshProUGUI selectedItemName;
     [SerializeField] private TextMeshProUGUI selectedItemRarity;
-    [SerializeField] private TextMeshProUGUI selectedItemStats;
+    [SerializeField] private TextMeshProUGUI selectedItemStat;
     
     [Header("Item Grid")]
     [SerializeField] private Transform itemGridParent;
@@ -23,19 +24,27 @@ public class EquipPopup : MonoBehaviour, IGUI
     [SerializeField] private ItemType currentFilterType;
     [SerializeField] private int selectedSlotIndex = -1;
     
-    public GameObject GUIObject => gameObject;
-    
     private Inventory inventory;
-    private InventoryPopup inventoryPopup;
+    [SerializeField] private InventoryPopup inventoryPopup;
+    
+    public GameObject GUIObject => gameObject;
+
+    private void Reset()
+    {
+        selectedItemImage = transform.FindChild<Image>("Img_SelectedItem");
+        selectedItemName = transform.FindChild<TextMeshProUGUI>("Tmp_ItemNameTxt");
+        selectedItemRarity = transform.FindChild<TextMeshProUGUI>("Tmp_ItemRarityTxt");
+        selectedItemStat = transform.FindChild<TextMeshProUGUI>("Tmp_ItemStatTxt");
+        
+        itemGridParent = transform.FindChild<Transform>("Group_Slots");
+
+        equipButton = transform.FindChild<Button>("Btn_Equip");
+        closeButton = transform.FindChild<Button>("Btn_Close");
+    }
 
     public void Initialization()
     {
         inventory = CharacterManager.Player.Inventory;
-        inventoryPopup = GetComponentInParent<InventoryPopup>();
-        
-        // Button Event
-        closeButton.onClick.AddListener(Close);
-        equipButton.onClick.AddListener(OnEquipButtonClicked);
         
         Close();
     }
@@ -129,7 +138,7 @@ public class EquipPopup : MonoBehaviour, IGUI
         {
             statsText += $"{modifier.value} {GetStatDisplayName(modifier.type)}\n";
         }
-        selectedItemStats.text = statsText.TrimEnd();
+        selectedItemStat.text = statsText.TrimEnd();
         
         // 장착/해제 버튼 텍스트 설정
         if (equipButton != null)
@@ -150,7 +159,7 @@ public class EquipPopup : MonoBehaviour, IGUI
     /// <summary>
     /// 파워업/해제 버튼 클릭
     /// </summary>
-    private void OnEquipButtonClicked()
+    public void OnEquipButtonClicked()
     {
         if (selectedSlotIndex == -1 || inventory == null) return;
         
@@ -162,7 +171,7 @@ public class EquipPopup : MonoBehaviour, IGUI
         RefreshItemSlots(); // 장착 상태 표시 업데이트
         
         // 부모 팝업 UI 새로고침
-        inventoryPopup?.RefreshUI();
+        inventoryPopup.RefreshUI();
     }
     
     /// <summary>

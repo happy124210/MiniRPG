@@ -121,7 +121,7 @@ public class PoolManager : MonoBehaviour
         // 활성 리스트에 추가
         activeEnemies.Add(enemy);
         
-        Debug.Log($"[EnemyPoolManager] {enemyData.enemyName} 풀에서 가져옴 (활성: {activeEnemies.Count})");
+        //Debug.Log($"[EnemyPoolManager] {enemyData.enemyName} 풀에서 가져옴 (활성: {activeEnemies.Count})");
     }
     
     /// <summary>
@@ -141,7 +141,7 @@ public class PoolManager : MonoBehaviour
         enemy.gameObject.SetActive(false);
         enemy.transform.SetParent(poolParent);
         
-        Debug.Log($"[EnemyPoolManager] {enemy.name} 풀로 반환됨 (활성: {activeEnemies.Count})");
+        //Debug.Log($"[EnemyPoolManager] {enemy.name} 풀로 반환됨 (활성: {activeEnemies.Count})");
     }
     
     /// <summary>

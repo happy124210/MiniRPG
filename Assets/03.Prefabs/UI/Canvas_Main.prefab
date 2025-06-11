@@ -527,7 +527,7 @@ MonoBehaviour:
   selectedItemImage: {fileID: 8056959500223783279}
   selectedItemName: {fileID: 1762037528214710157}
   selectedItemRarity: {fileID: 6275210330222055174}
-  selectedItemStats: {fileID: 4255408868129782042}
+  selectedItemStat: {fileID: 4255408868129782042}
   itemGridParent: {fileID: 4801367569576751118}
   itemSlotPrefab: {fileID: 3449458294375753551, guid: 3262306c227fe9b4c925fdbe654389e7,
     type: 3}
@@ -535,6 +535,7 @@ MonoBehaviour:
   closeButton: {fileID: 3708416567361104116}
   currentFilterType: 0
   selectedSlotIndex: -1
+  inventoryPopup: {fileID: 8596664153218066449}
 --- !u!1 &557647130552873017
 GameObject:
   m_ObjectHideFlags: 0
@@ -10575,7 +10576,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4992896213380388086}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3776057427347878153}
+        m_TargetAssemblyTypeName: EquipPopup, Assembly-CSharp
+        m_MethodName: OnEquipButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8778851020044158631
 GameObject:
   m_ObjectHideFlags: 0
