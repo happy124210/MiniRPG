@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
     
     private void InitializeUIs()
     {
-        // Screen UIs만 초기화 (팝업들은 각 Screen에서 관리)
+        // Screen UIs만 초기화
         if (screenUIList != null && screenUIList.Count > 0)
         {
             foreach (var uiMono in screenUIList)

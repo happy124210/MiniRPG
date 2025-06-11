@@ -123,13 +123,19 @@ public class InventoryPopup : MonoBehaviour, IGUI
     private void RefreshPlayerStats()
     {
         Player player = CharacterManager.Player;
-        if (player == null) return;
+        if (player == null)
+        {
+            Debug.LogError("Player is null");
+            return;
+        }
 
         int attackPower = player.StatHandler.GetStat(StatType.AttackPower);
         int health = player.StatHandler.GetStat(StatType.Hp);
         
         attackPowerText.text = attackPower.ToString();
         healthText.text = health.ToString();
+        
+        Debug.Log("Player stats updated");
     }
 
 
