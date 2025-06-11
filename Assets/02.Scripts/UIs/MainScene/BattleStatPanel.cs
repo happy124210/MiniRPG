@@ -13,6 +13,14 @@ public class BattleStatPanel : MonoBehaviour, IGUI
 
     private StatHandler stat;
 
+    private void Reset()
+    {
+        levelText = transform.FindChild<TextMeshProUGUI>("Tmp_LevelComment");
+        keyText = transform.FindChild<TextMeshProUGUI>("Tmp_KeyComment");
+        goldText = transform.FindChild<TextMeshProUGUI>("Tmp_GoldComment");
+        gemText = transform.FindChild<TextMeshProUGUI>("Tmp_GemComment");
+    }
+    
     private void Awake()
     {
         levelText = transform.FindChild<TextMeshProUGUI>("Tmp_LevelComment");
@@ -25,8 +33,8 @@ public class BattleStatPanel : MonoBehaviour, IGUI
     {
         stat = CharacterManager.Player.StatHandler;
         stat.OnStatChanged += UpdateUI;
-        UpdateUI();
         
+        UpdateUI();
         Close();
     }
 

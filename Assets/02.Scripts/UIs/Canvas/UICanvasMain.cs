@@ -11,10 +11,10 @@ public class UICanvasMain : MonoBehaviour, IGUI
     [Header("Popups")]
     [SerializeField] private InventoryPopup inventoryPopup;
     [SerializeField] private StageClearPopup stageClearPopup;
-    [SerializeField] private ShopPopup shopPopup;
+    //[SerializeField] private ShopPopup shopPopup;
     
-    [Header("Modals")]
-    [SerializeField] private ConfirmModal confirmModal;
+    //[Header("Modals")]
+    //[SerializeField] private ConfirmModal confirmModal;
 
     public void Reset()
     {
@@ -130,7 +130,7 @@ public class UICanvasMain : MonoBehaviour, IGUI
         return popupType switch
         {
             PopupType.Inventory => inventoryPopup != null && inventoryPopup.GUIObject.activeInHierarchy,
-            PopupType.Shop => shopPopup != null && shopPopup.GUIObject.activeInHierarchy,
+            //PopupType.Shop => shopPopup != null && shopPopup.GUIObject.activeInHierarchy,
             _ => false
         };
     }
@@ -138,14 +138,14 @@ public class UICanvasMain : MonoBehaviour, IGUI
     /// <summary>
     /// 특정 모달이 열려있는지 확인
     /// </summary>
-    public bool IsModalOpen(ModalType modalType)
-    {
-        return modalType switch
-        {
-            ModalType.Confirm => confirmModal != null && confirmModal.GUIObject.activeInHierarchy,
-            _ => false
-        };
-    }
+    // public bool IsModalOpen(ModalType modalType)
+    // {
+    //     return modalType switch
+    //     {
+    //         ModalType.Confirm => confirmModal != null && confirmModal.GUIObject.activeInHierarchy,
+    //         _ => false
+    //     };
+    // }
     
     #endregion
     
@@ -186,12 +186,12 @@ public class UICanvasMain : MonoBehaviour, IGUI
     /// </summary>
     public void OnBackButtonPressed()
     {
-        // 모달부터 확인
-        if (IsModalOpen(ModalType.Confirm))
-        {
-            CloseConfirm();
-            return;
-        }
+        // // 모달부터 확인
+        // if (IsModalOpen(ModalType.Confirm))
+        // {
+        //     CloseConfirm();
+        //     return;
+        // }
         
         // 팝업 확인
         if (IsPopupOpen(PopupType.Inventory))

@@ -17,13 +17,6 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
-
-    
-    private void Start()
-    {
-        UIManager.Instance.Initialize();
-        UIManager.Instance.ShowScreen(ScreenType.Start);
-    }
     
     
     public static void PauseGame()

@@ -23,6 +23,7 @@ public class StageClearPopup : MonoBehaviour, IGUI
     [SerializeField] private TextMeshProUGUI rewardGoldText;
     [SerializeField] private TextMeshProUGUI rewardGemText;
     [SerializeField] private Image rewardItemImage;
+    [SerializeField] private Button stageSelectButton;
     
     [Header("Animation Settings")]
     [SerializeField] private float boxAnimationDuration = 1f;
@@ -51,6 +52,7 @@ public class StageClearPopup : MonoBehaviour, IGUI
         rewardGoldText = transform.FindChild<TextMeshProUGUI>("Tmp_RewardGoldAmount");
         rewardGemText = transform.FindChild<TextMeshProUGUI>("Tmp_RewardGemAmount");
         rewardItemImage = transform.FindChild<Image>("Img_RewardItem");
+        stageSelectButton = transform.FindChild<Button>("Btn_StageSelect");
     }
     
     
@@ -70,6 +72,7 @@ public class StageClearPopup : MonoBehaviour, IGUI
         rewardGoldText = transform.FindChild<TextMeshProUGUI>("Tmp_RewardGoldAmount");
         rewardGemText = transform.FindChild<TextMeshProUGUI>("Tmp_RewardGemAmount");
         rewardItemImage = transform.FindChild<Image>("Img_RewardItem");
+        stageSelectButton = transform.FindChild<Button>("Btn_StageSelect");
     }
     
     
@@ -212,14 +215,16 @@ public class StageClearPopup : MonoBehaviour, IGUI
     
     private void GiveRewardsToPlayer()
     {
-        if (currentStageData == null) return;
+        if (!currentStageData) return;
         
         Player player = CharacterManager.Player;
-        if (player?.StatHandler == null) return;
+        if (!player?.StatHandler) return;
 
         player.StatHandler.ModifyStat(StatType.Gold, currentStageData.rewardGold);
         player.StatHandler.ModifyStat(StatType.Exp, currentStageData.rewardExp);
         player.StatHandler.ModifyStat(StatType.Gem, currentStageData.rewardGem);
+        
+        Debug.Log("GIVE REWARDS");
         
         // TODO: 아이템 보상 지급
         // GiveItemRewards();

@@ -6,6 +6,7 @@ public enum ScreenType
 {
     Start,
     Main,
+    StageSelect,
     Option
 }
 
@@ -337,6 +338,7 @@ public class UIManager : MonoBehaviour
     {
         if (name.Contains("Start")) return ScreenType.Start;
         if (name.Contains("Main")) return ScreenType.Main;
+        if (name.Contains("StageSelect")) return ScreenType.StageSelect;
         if (name.Contains("Option")) return ScreenType.Option;
         
         Debug.LogWarning($"Unknown screen name: {name}");

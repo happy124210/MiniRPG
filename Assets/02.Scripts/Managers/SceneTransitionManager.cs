@@ -47,7 +47,16 @@ public class SceneTransitionManager : MonoBehaviour
         // 페이드 패널 초기 설정
         SetupFadePanel();
     }
-    
+
+    private void Start()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.Initialize();
+            UIManager.Instance.ShowScreen(ScreenType.Start);
+        }
+    }
+
     /// <summary>
     /// 페이드 패널 초기 설정
     /// </summary>
@@ -178,7 +187,7 @@ public class SceneTransitionManager : MonoBehaviour
     #region Scene Loading Implementation
     
     /// <summary>
-    /// 씬 로딩 코루틴
+    /// 씬 로딩 코루틴 ( 전 팀원 코드 참조 )
     /// </summary>
     private IEnumerator LoadSceneCoroutine(SceneName sceneName)
     {
@@ -278,20 +287,20 @@ public class SceneTransitionManager : MonoBehaviour
                 }
                 break;
             
-            
-                
             case SceneName.MainMenu:
-                // 메인 메뉴 초기화
                 if (UIManager.Instance != null)
                 {
                     UIManager.Instance.Initialize();
                     UIManager.Instance.ShowScreen(ScreenType.Start);
                 }
                 break;
-                
+            
             case SceneName.StageSelect:
-                // 스테이지 선택 화면 초기화
-                // TODO: StageSelectManager 초기화
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.Initialize();
+                    UIManager.Instance.ShowScreen(ScreenType.StageSelect);
+                }
                 break;
         }
         
