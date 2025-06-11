@@ -217,14 +217,7 @@ public class StageClearPopup : MonoBehaviour, IGUI
     {
         if (!currentStageData) return;
         
-        Player player = CharacterManager.Player;
-        if (!player?.StatHandler) return;
-
-        player.StatHandler.ModifyStat(StatType.Gold, currentStageData.rewardGold);
-        player.StatHandler.ModifyStat(StatType.Exp, currentStageData.rewardExp);
-        player.StatHandler.ModifyStat(StatType.Gem, currentStageData.rewardGem);
-        
-        Debug.Log("GIVE REWARDS");
+        StageManager.Instance.GiveStageRewards();
         
         // TODO: 아이템 보상 지급
         // GiveItemRewards();
